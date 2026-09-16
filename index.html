@@ -245,8 +245,12 @@
             </div>
 
             <div class="pt-4">
-                <button type="button" id="submitBtn" onclick="submitForm()" class="btn-3d w-full py-4 text-lg">
+                <button type="button" id="submitBtn" onclick="submitForm()" class="btn-3d w-full py-4 text-lg mb-3">
                     <span id="btnText"><i class="fa-solid fa-paper-plane mr-2"></i>രജിസ്റ്റർ ചെയ്യുക</span>
+                </button>
+                
+                <button type="button" onclick="showResults()" class="w-full py-3 text-md font-bold text-white rounded-xl shadow-lg transition-all transform hover:-translate-y-1 flex justify-center items-center" style="background: linear-gradient(145deg, #f59e0b 0%, #d97706 100%);">
+                    <i class="fa-solid fa-trophy text-xl mr-2"></i>മത്സര ഫലങ്ങൾ (Results)
                 </button>
             </div>
         </form>
@@ -297,6 +301,27 @@
             <div><label class="block text-gray-700 text-sm font-bold mb-1">Password</label><input type="password" id="adminPass" class="input-3d w-full px-4 py-2" placeholder="Enter password"></div>
             <button onclick="loginAdmin()" class="btn-3d w-full py-3 mt-2">Login</button>
             <button onclick="hideAdminLogin()" class="w-full py-2 mt-2 text-gray-500 hover:text-gray-700 text-sm font-semibold">Cancel</button>
+        </div>
+    </div>
+
+    <div id="resultsView" class="hidden no-print max-h-[80vh] flex flex-col">
+        <div class="text-center mb-4 flex-shrink-0">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 text-yellow-600 mb-2 shadow-sm border border-yellow-200">
+                <i class="fa-solid fa-trophy text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800">വിജയികൾ</h3>
+            <p class="text-gray-600 text-sm font-semibold mt-1">നൂപുരം 2026 കലോത്സവം</p>
+        </div>
+        
+        <!-- Results Grid Container (3 Columns) -->
+        <div id="resultsContent" class="overflow-y-auto flex-grow grid grid-cols-3 gap-2 pr-2 pb-2 custom-scrollbar" style="max-height: 50vh;">
+            <!-- Results will be injected here via JS -->
+        </div>
+
+        <div class="mt-4 pt-4 border-t flex-shrink-0">
+            <button onclick="hideResults()" class="w-full py-3 bg-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-300 transition">
+                <i class="fa-solid fa-arrow-left mr-2"></i>തിരികെ പോകുക
+            </button>
         </div>
     </div>
 </div>
@@ -376,6 +401,97 @@
     const errorText = document.getElementById('errorText');
 
     let processedStudentsData = []; // Store processed data globally for tabs
+
+    // അക്ഷരത്തെറ്റുകൾ തിരുത്തിയതും 1st, 2nd, 3rd കൃത്യമായി നൽകിയതുമായ ഡാറ്റ
+    const eventResults = [
+        { item: "പദ്യം ചൊല്ലൽ (മലയാളം)", winners: [{ rank: 1, name: "ആജ്‌വ ഫാത്തിമ" }] },
+        { item: "പ്രസംഗം (മലയാളം)", winners: [{ rank: 1, name: "മിൻഹാജ് . പി" }] },
+        { item: "ആംഗ്യപ്പാട്ട് (അറബിക്)", winners: [{ rank: 1, name: "ഷഹബാസ്" }] },
+        { item: "കഥ പറയൽ (കഥാകഥനം)", winners: [{ rank: 1, name: "ആര്യനന്ദ" }, { rank: 2, name: "നഷ്‌വ" }, { rank: 3, name: "ഫൈഹ ഫാത്തിമ" }] },
+        { item: "സംഘഗാനം", winners: [{ rank: 1, name: "Ajwa and Team" }] },
+        { item: "മോണോ ആക്ട്", winners: [{ rank: 1, name: "തസ്‌നിം" }, { rank: 2, name: "ഷിഫ ഫാത്തിമ" }, { rank: 3, name: "മുഫിദ" }] },
+        { item: "ആംഗ്യപ്പാട്ട് (മലയാളം)", winners: [{ rank: 1, name: "Muhammed Shahabas" }, { rank: 2, name: "Ayisha Riya . C" }, { rank: 3, name: "Aryananda . B" }] },
+        { item: "ആംഗ്യപ്പാട്ട് (ഇംഗ്ലീഷ്)", winners: [{ rank: 1, name: "Muhammed Shahabas" }, { rank: 2, name: "Fidha Fathima" }, { rank: 3, name: "Riswan" }] },
+        { item: "മാപ്പിളപ്പാട്ട്", winners: [{ rank: 1, name: "Jadul Haque . K" }, { rank: 2, name: "Swafa Fathima" }, { rank: 3, name: "Fahma Fathima" }] },
+        { item: "ദേശഭക്തിഗാനം", winners: [{ rank: 1, name: "Ajwa & Team" }] },
+        { item: "ലളിതഗാനം", winners: [{ rank: 1, name: "മിൻഹ ഫാത്തിമ" }, { rank: 2, name: "ഹിഷാം" }, { rank: 3, name: "ഷഹ്മ ഫാത്തിമ" }] },
+        { item: "അറബിഗാനം", winners: [{ rank: 1, name: "മിൻഹാജ് . പി" }, { rank: 2, name: "Hashim - V" }, { rank: 3, name: "ഹിഷാം . സി" }] },
+        { item: "അറബി സംഘഗാനം", winners: [{ rank: 1, name: "റൈഹാൻ & ടീം" }] },
+        { item: "പദ്യം ചൊല്ലൽ (ഇംഗ്ലീഷ്)", winners: [{ rank: 1, name: "ഹിഷാം" }] },
+        { item: "ഖുർആൻ പാരായണം", winners: [{ rank: 1, name: "മുഹമ്മദ് ഹിഷാം (Std-III)" }, { rank: 2, name: "ഫാത്തിമ മിൻഹ . പി" }, { rank: 3, name: "മുഹമ്മദ് അംജദ് . പി.വി." }] }
+    ];
+
+    function showResults() {
+        document.getElementById('userView').classList.add('hidden');
+        document.getElementById('resultsView').classList.remove('hidden');
+        renderResults();
+    }
+
+    function hideResults() {
+        document.getElementById('resultsView').classList.add('hidden');
+        document.getElementById('userView').classList.remove('hidden');
+    }
+
+    function toggleResult(element) {
+        const content = element.nextElementSibling;
+        const icon = element.querySelector('.fa-chevron-down');
+        
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            icon.style.transform = 'rotate(180deg)';
+        } else {
+            content.classList.add('hidden');
+            icon.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    function renderResults() {
+        const container = document.getElementById('resultsContent');
+        container.innerHTML = '';
+        
+        // 3D ബട്ടണുകൾക്കുള്ള വ്യത്യസ്ത കളർ കോമ്പിനേഷനുകൾ
+        const colors = [
+            "bg-gradient-to-b from-pink-400 to-rose-500 shadow-[0_4px_0_#be123c]", // Pink-Rose
+            "bg-gradient-to-b from-cyan-400 to-blue-500 shadow-[0_4px_0_#1d4ed8]", // Cyan-Blue
+            "bg-gradient-to-b from-teal-400 to-emerald-500 shadow-[0_4px_0_#047857]", // Teal-Emerald
+            "bg-gradient-to-b from-amber-400 to-orange-500 shadow-[0_4px_0_#c2410c]", // Amber-Orange
+            "bg-gradient-to-b from-purple-400 to-indigo-500 shadow-[0_4px_0_#4338ca]", // Purple-Indigo
+            "bg-gradient-to-b from-lime-500 to-green-600 shadow-[0_4px_0_#15803d]"  // Lime-Green
+        ];
+        
+        eventResults.forEach((res, index) => {
+            let winnersHtml = '';
+            res.winners.forEach(w => {
+                let badge = '';
+                let rankText = '';
+                if(w.rank === 1) { badge = '<span class="text-yellow-500 text-sm"><i class="fa-solid fa-medal"></i></span>'; rankText = '<span class="font-bold text-yellow-600 text-xs">1st</span>'; }
+                else if(w.rank === 2) { badge = '<span class="text-gray-400 text-sm"><i class="fa-solid fa-medal"></i></span>'; rankText = '<span class="font-bold text-gray-500 text-xs">2nd</span>'; }
+                else if(w.rank === 3) { badge = '<span class="text-orange-700 text-sm"><i class="fa-solid fa-medal"></i></span>'; rankText = '<span class="font-bold text-orange-800 text-xs">3rd</span>'; }
+                else { badge = '<span class="text-yellow-500 text-sm"><i class="fa-solid fa-medal"></i></span>'; rankText = `<span class="font-bold text-yellow-600 text-xs">${w.rank}</span>`; }
+                
+                winnersHtml += `<div class="flex flex-col items-center justify-center text-center text-gray-800 font-semibold mb-2 bg-white p-2 rounded-lg border border-gray-100 shadow-sm w-full">
+                    <div class="flex items-center gap-1 mb-1">${badge} ${rankText}</div>
+                    <span class="text-[10px] leading-tight break-words text-gray-700">${w.name}</span>
+                </div>`;
+            });
+
+            // ഒരോ ഐറ്റത്തിനും വ്യത്യസ്ത കളർ എടുക്കാൻ
+            const colorClass = colors[index % colors.length];
+
+            const card = `
+                <div class="flex flex-col self-start mb-2">
+                    <div onclick="toggleResult(this)" class="${colorClass} text-white rounded-xl cursor-pointer flex flex-col justify-center items-center p-2 min-h-[65px] text-center transform transition-all duration-100 hover:brightness-110 active:translate-y-[4px] active:shadow-none mb-1">
+                        <h4 class="font-bold text-[11px] leading-tight mb-1 drop-shadow-md">${res.item}</h4>
+                        <i class="fa-solid fa-chevron-down text-white/80 text-[10px] transition-transform duration-300 mt-auto"></i>
+                    </div>
+                    <div class="hidden px-2 pb-2 pt-2 bg-white rounded-xl border border-gray-200 shadow-sm w-full mt-1">
+                        ${winnersHtml}
+                    </div>
+                </div>
+            `;
+            container.innerHTML += card;
+        });
+    }
 
     // Dropdown Logic
     dropdownHeader.addEventListener('click', () => {
