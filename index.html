@@ -388,7 +388,7 @@
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwM1KilWudssv_9uQMVEPIeHTH3UXzAi8GDPP_OVhyNyAvI3-JiiUXS0L3Vp3eBH0OZ/exec"; 
+    const SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE"; 
 
     // UI Elements
     const dropdownHeader = document.getElementById('dropdownHeader');
@@ -409,7 +409,7 @@
         { item: "ആംഗ്യപ്പാട്ട് (അറബിക്)", winners: [{ rank: 1, name: "ഷഹബാസ്" }] },
         { item: "കഥ പറയൽ (കഥാകഥനം)", winners: [{ rank: 1, name: "ആര്യനന്ദ" }, { rank: 2, name: "നഷ്‌വ" }, { rank: 3, name: "ഫൈഹ ഫാത്തിമ" }] },
         { item: "സംഘഗാനം", winners: [{ rank: 1, name: "Ajwa and Team" }] },
-        { item: "മോണോ ആക്ട്", winners: [{ rank: 1, name: "തസ്‌നിം" }, { rank: 2, name: "ഷിഫ ഫാത്തിമ" }, { rank: 3, name: "മുഫിദ" }] },
+        { item: "മോണോ ആക്ട്", winners: [{ rank: 1, name: "തമീം" }, { rank: 2, name: "ഷിഫ ഫാത്തിമ" }, { rank: 3, name: "മുഫീദ" }] },
         { item: "ആംഗ്യപ്പാട്ട് (മലയാളം)", winners: [{ rank: 1, name: "Muhammed Shahabas" }, { rank: 2, name: "Ayisha Riya . C" }, { rank: 3, name: "Aryananda . B" }] },
         { item: "ആംഗ്യപ്പാട്ട് (ഇംഗ്ലീഷ്)", winners: [{ rank: 1, name: "Muhammed Shahabas" }, { rank: 2, name: "Fidha Fathima" }, { rank: 3, name: "Riswan" }] },
         { item: "മാപ്പിളപ്പാട്ട്", winners: [{ rank: 1, name: "Jadul Haque . K" }, { rank: 2, name: "Swafa Fathima" }, { rank: 3, name: "Fahma Fathima" }] },
@@ -418,7 +418,11 @@
         { item: "അറബിഗാനം", winners: [{ rank: 1, name: "മിൻഹാജ് . പി" }, { rank: 2, name: "Hashim - V" }, { rank: 3, name: "ഹിഷാം . സി" }] },
         { item: "അറബി സംഘഗാനം", winners: [{ rank: 1, name: "റൈഹാൻ & ടീം" }] },
         { item: "പദ്യം ചൊല്ലൽ (ഇംഗ്ലീഷ്)", winners: [{ rank: 1, name: "ഹിഷാം" }] },
-        { item: "ഖുർആൻ പാരായണം", winners: [{ rank: 1, name: "മുഹമ്മദ് ഹിഷാം (Std-III)" }, { rank: 2, name: "ഫാത്തിമ മിൻഹ . പി" }, { rank: 3, name: "മുഹമ്മദ് അംജദ് . പി.വി." }] }
+        { item: "ഖുർആൻ പാരായണം", winners: [{ rank: 1, name: "മുഹമ്മദ് ഹിഷാം (Std-III)" }, { rank: 2, name: "ഫാത്തിമ മിൻഹ . പി" }, { rank: 3, name: "മുഹമ്മദ് അംജദ് . പി.വി." }] },
+        { item: "ചിത്രരചന", winners: [{ rank: 1, name: "മിൻഹാജ് . പി" }, { rank: 2, name: "ഷഹ്മ . പി.കെ" }, { rank: 3, name: "ഹയ ഫാത്തിമ" }] },
+        { item: "ജലച്ചായം", winners: [{ rank: 1, name: "ഹാഷിം" }, { rank: 2, name: "ഷിഫ" }] },
+        { item: "കടങ്കഥ", winners: [{ rank: 1, name: "ഹാഷിം" }, { rank: 2, name: "മിൻഹാജ് . പി" }, { rank: 3, name: "മിനിയ ഫാത്തിമ" }] },
+        { item: "കൈയെഴുത്ത് അറബി", winners: [{ rank: 1, name: "ഫാത്തിമ ഫയ . പി.പി" }, { rank: 2, name: "ഷിഫ ഫാത്തിമ . സി" }, { rank: 3, name: "മുഹമ്മദ് മിൻഹാജ് . പി" }] }
     ];
 
     function showResults() {
@@ -531,7 +535,7 @@
 
     function submitForm() {
         hideError();
-        if (SCRIPT_URL === "https://script.google.com/macros/s/AKfycbwM1KilWudssv_9uQMVEPIeHTH3UXzAi8GDPP_OVhyNyAvI3-JiiUXS0L3Vp3eBH0OZ/exec" || SCRIPT_URL === "") {
+        if (SCRIPT_URL === "YOUR_GOOGLE_SCRIPT_URL_HERE" || SCRIPT_URL === "") {
             showError("Google Script URL നൽകിയിട്ടില്ല! കോഡിൽ ലിങ്ക് ചേർക്കുക."); return;
         }
 
